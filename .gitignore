@@ -1,0 +1,32 @@
+# Dependencies
+frontend/node_modules/
+frontend/package-lock.json
+
+# Build outputs
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# PHP
+backend/vendor/
+*.cache
+
