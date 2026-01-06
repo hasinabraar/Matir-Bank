@@ -17,7 +17,12 @@ switch ($action) {
     case 'groups':
         switch ($method) {
             case 'GET':
-                $result = $conn->query("SELECT * FROM Samity_Groups ORDER BY CreationDate DESC");
+                $result = $conn->query("
+                    SELECT g.*, p.MaxLoanAmount, p.InterestRate 
+                    FROM Samity_Groups g
+                    LEFT JOIN Group_Policies p ON g.GroupID = p.GroupID 
+                    ORDER BY g.CreationDate DESC
+                ");
                 $groups = [];
                 while ($row = $result->fetch_assoc()) { $groups[] = $row; }
                 echo json_encode(['success' => true, 'data' => $groups]);
@@ -36,6 +41,66 @@ switch ($action) {
                 } else {
                     http_response_code(500);
                     echo json_encode(['success' => false, 'message' => 'Failed to create group: ' . $stmt->error]);
+                }
+                $stmt->close();
+                break;
+            case 'PUT':
+                $data = json_decode(file_get_contents('php://input'), true);
+                if (!isset($data['GroupID'])) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'GroupID is required']);
+                    break;
+                }
+                $updates = [];
+                $params = [];
+                $types = '';
+
+                if (isset($data['GroupName'])) {
+                    $updates[] = "GroupName = ?";
+                    $params[] = $data['GroupName'];
+                    $types .= 's';
+                }
+                if (isset($data['LeaderID'])) {
+                    $updates[] = "LeaderID = ?";
+                    $params[] = $data['LeaderID'];
+                    $types .= 'i';
+                }
+
+                if (empty($updates)) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'No fields to update']);
+                    break;
+                }
+
+                $sql = "UPDATE Samity_Groups SET " . implode(', ', $updates) . " WHERE GroupID = ?";
+                $params[] = $data['GroupID'];
+                $types .= 'i';
+
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param($types, ...$params);
+
+                if ($stmt->execute()) {
+                    echo json_encode(['success' => true, 'message' => 'Group updated']);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['success' => false, 'message' => 'Failed to update group: ' . $stmt->error]);
+                }
+                $stmt->close();
+                break;
+            case 'DELETE':
+                $groupId = isset($_GET['id']) ? intval($_GET['id']) : null;
+                if (!$groupId) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'Group ID is required']);
+                    break;
+                }
+                $stmt = $conn->prepare("DELETE FROM Samity_Groups WHERE GroupID = ?");
+                $stmt->bind_param("i", $groupId);
+                if ($stmt->execute()) {
+                    echo json_encode(['success' => true, 'message' => 'Group deleted']);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['success' => false, 'message' => 'Failed to delete group: ' . $stmt->error]);
                 }
                 $stmt->close();
                 break;

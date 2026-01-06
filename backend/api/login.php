@@ -24,7 +24,7 @@ if ($method === 'POST') {
     $password = $data['password'];
 
     // Find user
-    $stmt = $conn->prepare("SELECT UserID, Username, PasswordHash, FullName, Email FROM Users WHERE Username = ?");
+    $stmt = $conn->prepare("SELECT UserID, Username, PasswordHash, FullName, Email, Role FROM Users WHERE Username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();

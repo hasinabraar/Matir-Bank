@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { productsAPI, ordersAPI } from '../api';
 
-const MarketplaceSection = ({ products, orders, userId, onMessage, reload }) => {
+const MarketplaceSection = ({ products, orders, userId, userRole, onMessage, reload }) => {
   const [showForm, setShowForm] = useState(false);
   const [prodForm, setProdForm] = useState({ SellerID: userId, Category: '', PricePerUnit: '', StockQty: 0 });
   const [orderForm, setOrderForm] = useState({ BuyerID: userId, Items: [] });
@@ -51,6 +51,21 @@ const MarketplaceSection = ({ products, orders, userId, onMessage, reload }) => 
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to place order');
+    }
+  };
+
+  const deleteProduct = async (prodId) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    try {
+      const res = await productsAPI.delete(prodId);
+      if (res.data.success) {
+        onMessage('success', 'Product deleted');
+        reload();
+      } else {
+        onMessage('error', res.data.message || 'Failed to delete product');
+      }
+    } catch (err) {
+      onMessage('error', err.response?.data?.message || 'Failed to delete product');
     }
   };
 
@@ -112,6 +127,15 @@ const MarketplaceSection = ({ products, orders, userId, onMessage, reload }) => 
                 <p><strong>Stock:</strong> {p.StockQty}</p>
                 <div className="actions">
                   <button className="btn btn-success" onClick={() => addItemToOrder(p)}>Add to Order</button>
+                  {userRole === 'Admin' && (
+                    <button
+                      className="btn btn-danger"
+                      style={{ marginLeft: '10px' }}
+                      onClick={() => deleteProduct(p.ProdID)}
+                    >
+                      Delete (Admin)
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

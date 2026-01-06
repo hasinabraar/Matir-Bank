@@ -23,6 +23,9 @@ function Navbar({ user, onLogout }) {
             <NavLink to="/marketplace" className={({ isActive }) => isActive ? 'active' : ''}>Marketplace</NavLink>
             <NavLink to="/bulk" className={({ isActive }) => isActive ? 'active' : ''}>Bulk Procurement</NavLink>
             <NavLink to="/reputation" className={({ isActive }) => isActive ? 'active' : ''}>Reputation</NavLink>
+            {user.Role === 'Admin' && (
+              <NavLink to="/users" className={({ isActive }) => isActive ? 'active' : ''}>Users</NavLink>
+            )}
             <div className="navbar-user">
               <span>Welcome, {user.FullName}</span>
               <button onClick={handleLogout} className="logout-btn">Logout</button>

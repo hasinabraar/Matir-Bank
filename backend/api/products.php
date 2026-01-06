@@ -115,6 +115,22 @@ switch ($method) {
         }
         $stmt->close();
         break;
+    case 'DELETE':
+        if (!$prodId) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'ProdID is required']);
+            break;
+        }
+        $stmt = $conn->prepare("DELETE FROM Products WHERE ProdID = ?");
+        $stmt->bind_param("i", $prodId);
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Product deleted']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Failed to delete product: ' . $stmt->error]);
+        }
+        $stmt->close();
+        break;
     default:
         http_response_code(405);
         echo json_encode(['success' => false, 'message' => 'Method not allowed']);

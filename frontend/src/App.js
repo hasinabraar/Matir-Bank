@@ -11,6 +11,7 @@ import SamitySection from './components/SamitySection';
 import MarketplaceSection from './components/MarketplaceSection';
 import BulkProcurementSection from './components/BulkProcurementSection';
 import ReputationSection from './components/ReputationSection';
+import UsersSection from './components/UsersSection';
 import { accountsAPI, goalsAPI, transactionsAPI, samityAPI, productsAPI, ordersAPI, bulkAPI, reputationAPI } from './api';
 import './App.css';
 
@@ -159,6 +160,7 @@ function App() {
   };
 
   const userId = user ? (user.UserID || user.userId) : null;
+  const userRole = user ? user.Role : null;
 
   return (
     <BrowserRouter>
@@ -182,6 +184,7 @@ function App() {
                 <AccountsSection
                   accounts={accounts}
                   userId={userId}
+                  userRole={userRole}
                   selectedAccount={selectedAccount}
                   onAccountSelect={setSelectedAccount}
                   onAccountCreated={handleAccountCreated}
@@ -221,6 +224,7 @@ function App() {
               <SamitySection
                 samityData={samityData}
                 userId={userId}
+                userRole={userRole}
                 onMessage={showMessage}
               />
             ) : <Navigate to="/login" />} />
@@ -230,6 +234,7 @@ function App() {
                 products={products}
                 orders={orders}
                 userId={userId}
+                userRole={userRole}
                 onMessage={showMessage}
                 reload={() => loadData(userId)}
               />
@@ -248,6 +253,10 @@ function App() {
             <Route path="/reputation" element={user ? (
               <ReputationSection reputation={reputation} />
             ) : <Navigate to="/login" />} />
+
+            <Route path="/users" element={user && user.Role === 'Admin' ? (
+              <UsersSection onMessage={showMessage} />
+            ) : <Navigate to="/accounts" />} />
           </Routes>
         </div>
       </div>

@@ -204,7 +204,7 @@ switch ($method) {
         }
         $stmt->close();
         break;
-        
+
     default:
         http_response_code(405);
         echo json_encode([
@@ -212,6 +212,5 @@ switch ($method) {
             'message' => 'Method not allowed'
         ]);
 }
-
 $conn->close();
 

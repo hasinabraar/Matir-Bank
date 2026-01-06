@@ -78,6 +78,8 @@ export const transactionsAPI = {
 export const samityAPI = {
   listGroups: () => api.get('/samity.php?action=groups'),
   createGroup: (data) => api.post('/samity.php?action=groups', data),
+  updateGroup: (data) => api.put('/samity.php?action=groups', data),
+  deleteGroup: (id) => api.delete(`/samity.php?action=groups&id=${id}`),
   listMembers: (groupId) => api.get(`/samity.php?action=members${groupId ? `&groupId=${groupId}` : ''}`),
   addMember: (data) => api.post('/samity.php?action=members', data),
   setPolicy: (data) => api.post('/samity.php?action=policies', data),
@@ -95,6 +97,11 @@ export const productsAPI = {
 export const ordersAPI = {
   getAll: () => api.get('/orders.php'),
   create: (data) => api.post('/orders.php', data),
+};
+
+export const usersAPI = {
+  getAll: () => api.get('/users.php'),
+  delete: (id) => api.delete(`/users.php?id=${id}`),
 };
 
 // Bulk Procurement API
