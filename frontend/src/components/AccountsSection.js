@@ -13,7 +13,7 @@ const AccountsSection = ({
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     UserID: userId,
-    AccountType: '',
+    AccountType: 'Savings',
     CurrentBalance: 0,
     DateOpened: new Date().toISOString().split('T')[0],
   });
@@ -73,13 +73,14 @@ const AccountsSection = ({
           {error && <div className="error-message">{error}</div>}
           <div className="form-group">
             <label>Account Type *</label>
-            <input
-              type="text"
+            <select
               value={formData.AccountType}
               onChange={(e) => setFormData({ ...formData, AccountType: e.target.value })}
-              placeholder="e.g., Savings, Current, Goal-based"
               required
-            />
+            >
+              <option value="Savings">Savings</option>
+              <option value="Current">Current</option>
+            </select>
           </div>
           <div className="form-group">
             <label>Initial Balance</label>
@@ -118,14 +119,19 @@ const AccountsSection = ({
               style={{
                 borderLeftColor: selectedAccount?.AccountID === account.AccountID ? '#667eea' : '#ddd',
                 backgroundColor: selectedAccount?.AccountID === account.AccountID ? '#e8eaf6' : '#f8f9fa',
-                cursor: 'pointer',
               }}
-              onClick={() => onAccountSelect(account)}
             >
               <h3>{account.AccountType}</h3>
               <p><strong>Balance:</strong> ৳{parseFloat(account.CurrentBalance).toFixed(2)}</p>
               <p><strong>Opened:</strong> {new Date(account.DateOpened).toLocaleDateString()}</p>
               <div className="actions">
+                <button
+                  className="btn btn-primary"
+                  style={{ marginRight: '10px' }}
+                  onClick={() => onAccountSelect(selectedAccount?.AccountID === account.AccountID ? null : account)}
+                >
+                  Manage {selectedAccount?.AccountID === account.AccountID ? '▲' : '▼'}
+                </button>
                 <button
                   className="btn btn-danger"
                   onClick={(e) => {

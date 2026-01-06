@@ -74,3 +74,47 @@ export const transactionsAPI = {
   delete: (id) => api.delete(`/transactions.php/${id}`),
 };
 
+// Samity API
+export const samityAPI = {
+  listGroups: () => api.get('/samity.php?action=groups'),
+  createGroup: (data) => api.post('/samity.php?action=groups', data),
+  listMembers: (groupId) => api.get(`/samity.php?action=members${groupId ? `&groupId=${groupId}` : ''}`),
+  addMember: (data) => api.post('/samity.php?action=members', data),
+  setPolicy: (data) => api.post('/samity.php?action=policies', data),
+  checkEligibility: (data) => api.post('/samity.php?action=eligibility', data),
+};
+
+// Marketplace API
+export const productsAPI = {
+  getAll: () => api.get('/products.php'),
+  create: (data) => api.post('/products.php', data),
+  update: (id, data) => api.put(`/products.php/${id}`, data),
+  delete: (id) => api.delete(`/products.php/${id}`),
+};
+
+export const ordersAPI = {
+  getAll: () => api.get('/orders.php'),
+  create: (data) => api.post('/orders.php', data),
+};
+
+// Bulk Procurement API
+export const bulkAPI = {
+  listSuppliers: () => api.get('/bulk.php?action=suppliers'),
+  createSupplier: (data) => api.post('/bulk.php?action=suppliers', data),
+  listRequests: (supplierId) => api.get(`/bulk.php?action=requests${supplierId ? `&supplierId=${supplierId}` : ''}`),
+  createRequest: (data) => api.post('/bulk.php?action=requests', data),
+  createMasterOrder: (data) => api.post('/bulk.php?action=create_master', data),
+};
+
+// Auth API
+export const authAPI = {
+  login: (data) => api.post('/login.php', data),
+  register: (data) => api.post('/register.php', data),
+};
+
+// Reputation API
+export const reputationAPI = {
+  getForUser: (userId) => api.get(`/reputation.php?userId=${userId}`),
+  getAll: () => api.get('/reputation.php'),
+};
+
