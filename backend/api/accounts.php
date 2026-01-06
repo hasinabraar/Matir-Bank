@@ -70,6 +70,15 @@ switch ($method) {
         
         $userId = intval($data['UserID']);
         $accountType = $conn->real_escape_string($data['AccountType']);
+        $allowedTypes = ['Savings', 'Current'];
+        if (!in_array($accountType, $allowedTypes, true)) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid AccountType. Allowed: Savings, Current'
+            ]);
+            break;
+        }
         $currentBalance = isset($data['CurrentBalance']) ? floatval($data['CurrentBalance']) : 0.00;
         $dateOpened = isset($data['DateOpened']) ? $conn->real_escape_string($data['DateOpened']) : date('Y-m-d');
         
@@ -115,8 +124,18 @@ switch ($method) {
         $types = '';
         
         if (isset($data['AccountType'])) {
+            $newType = $conn->real_escape_string($data['AccountType']);
+            $allowedTypes = ['Savings', 'Current'];
+            if (!in_array($newType, $allowedTypes, true)) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid AccountType. Allowed: Savings, Current'
+                ]);
+                break;
+            }
             $updates[] = "AccountType = ?";
-            $params[] = $conn->real_escape_string($data['AccountType']);
+            $params[] = $newType;
             $types .= 's';
         }
         

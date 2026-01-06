@@ -22,6 +22,21 @@ if (strpos($path, 'api/accounts') === 0 || $path === 'accounts.php') {
 } elseif (strpos($path, 'api/transactions') === 0 || $path === 'transactions.php') {
     $_SERVER['REQUEST_URI'] = '/api/' . $path;
     require_once 'api/transactions.php';
+} elseif (strpos($path, 'api/products') === 0 || $path === 'products.php') {
+    $_SERVER['REQUEST_URI'] = '/api/' . $path;
+    require_once 'api/products.php';
+} elseif (strpos($path, 'api/orders') === 0 || $path === 'orders.php') {
+    $_SERVER['REQUEST_URI'] = '/api/' . $path;
+    require_once 'api/orders.php';
+} elseif (strpos($path, 'api/bulk') === 0 || $path === 'bulk.php') {
+    $_SERVER['REQUEST_URI'] = '/api/' . $path;
+    require_once 'api/bulk.php';
+} elseif (strpos($path, 'api/samity') === 0 || $path === 'samity.php') {
+    $_SERVER['REQUEST_URI'] = '/api/' . $path;
+    require_once 'api/samity.php';
+} elseif (strpos($path, 'api/reputation') === 0 || $path === 'reputation.php') {
+    $_SERVER['REQUEST_URI'] = '/api/' . $path;
+    require_once 'api/reputation.php';
 } else {
     http_response_code(404);
     echo json_encode([
