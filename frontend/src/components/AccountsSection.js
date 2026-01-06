@@ -9,7 +9,6 @@ const AccountsSection = ({
   onAccountCreated,
   onAccountDeleted,
   loading,
-  userRole,
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -60,8 +59,6 @@ const AccountsSection = ({
     }
   };
 
-  const displayedAccounts = userRole === 'Admin' ? accounts : accounts.filter(a => a.UserID === userId);
-
   return (
     <div className="section">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -109,34 +106,42 @@ const AccountsSection = ({
 
       {loading ? (
         <div className="empty-state">Loading accounts...</div>
-      ) : displayedAccounts.length === 0 ? (
+      ) : accounts.length === 0 ? (
         <div className="empty-state">
-          <p>No accounts found. Create one to get started!</p>
+          <p>No accounts yet. Create your first account to get started!</p>
         </div>
       ) : (
         <div className="grid">
-          {displayedAccounts.map((account) => (
+          {accounts.map((account) => (
             <div
               key={account.AccountID}
-              className={`card ${selectedAccount?.AccountID === account.AccountID ? 'selected' : ''}`}
-              onClick={() => onAccountSelect(account)}
+              className="list-item"
+              style={{
+                borderLeftColor: selectedAccount?.AccountID === account.AccountID ? '#667eea' : '#ddd',
+                backgroundColor: selectedAccount?.AccountID === account.AccountID ? '#e8eaf6' : '#f8f9fa',
+              }}
             >
-              <h3>{account.AccountType} Account</h3>
-              <p className="balance">৳{parseFloat(account.CurrentBalance).toFixed(2)}</p>
-              <p className="meta">ID: {account.AccountID}</p>
-              <p className="meta">Opened: {new Date(account.DateOpened).toLocaleDateString()}</p>
-              {userRole === 'Admin' && (
+              <h3>{account.AccountType}</h3>
+              <p><strong>Balance:</strong> ৳{parseFloat(account.CurrentBalance).toFixed(2)}</p>
+              <p><strong>Opened:</strong> {new Date(account.DateOpened).toLocaleDateString()}</p>
+              <div className="actions">
                 <button
-                  className="btn btn-danger btn-sm"
-                  style={{ marginTop: '10px' }}
+                  className="btn btn-primary"
+                  style={{ marginRight: '10px' }}
+                  onClick={() => onAccountSelect(selectedAccount?.AccountID === account.AccountID ? null : account)}
+                >
+                  Manage {selectedAccount?.AccountID === account.AccountID ? '▲' : '▼'}
+                </button>
+                <button
+                  className="btn btn-danger"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDelete(account.AccountID);
                   }}
                 >
-                  Delete (Admin)
+                  Delete
                 </button>
-              )}
+              </div>
             </div>
           ))}
         </div>
@@ -146,4 +151,3 @@ const AccountsSection = ({
 };
 
 export default AccountsSection;
-
